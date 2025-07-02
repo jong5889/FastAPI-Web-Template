@@ -1,0 +1,2 @@
+# Versions reviewed and fixed on 2025-07-02
+streamlit==1.36.0

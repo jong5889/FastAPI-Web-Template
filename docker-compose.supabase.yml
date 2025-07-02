@@ -1,0 +1,56 @@
+version: '3.9'
+services:
+  supabase_db:
+    image: postgres:15-alpine # Supabase는 최신 PostgreSQL 버전을 사용합니다.
+    ports:
+      - "5433:5432" # 기본 PostgreSQL 포트와 충돌하지 않도록 5433으로 설정
+    environment:
+      POSTGRES_USER: supabase_user
+      POSTGRES_PASSWORD: supabase_password
+      POSTGRES_DB: supabase_db
+    volumes:
+      - supabase_db_data:/var/lib/postgresql/data
+    command: >
+      postgres -c 'max_locks_per_transaction=256'
+      -c 'log_statement=all'
+      -c 'shared_preload_libraries=pg_stat_statements'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U supabase_user -d supabase_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgrest:
+    image: postgrest/postgrest
+    ports:
+      - "3000:3000"
+    environment:
+      PGRST_DB_URI: postgres://supabase_user:supabase_password@supabase_db:5432/supabase_db
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: anon
+    depends_on:
+      supabase_db:
+        condition: service_healthy
+
+  # 백엔드 API 서비스 (기존 api 서비스와 동일하게 설정)
+  api:
+    build: ./backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - ./backend:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SQLALCHEMY_DATABASE_URL=postgresql://supabase_user:supabase_password@supabase_db:5432/supabase_db # Supabase DB 연결
+    depends_on:
+      - redis
+      - supabase_db # Supabase DB에 의존
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  supabase_db_data:
