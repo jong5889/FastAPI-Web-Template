@@ -20,6 +20,22 @@
 
 ## 시작하기
 
+### Workflow Diagram
+
+```
++-------------------+       +-------------------+       +-------------------+
+|     User Action   | ----> |   Frontend (React)| ----> |   Backend (FastAPI)|
+| (Browser/Client)  |       | (Nginx Static/SPA)|       | (API Endpoints)   |
++-------------------+       +-------------------+       +-------------------+
+         ^                                                       |
+         |                                                       |
+         |                                                       v
+         |                                               +-------------------+
+         |                                               |   Database (PG)   |
+         +-----------------------------------------------| (Data Storage)    |
+                                                         +-------------------+
+```
+
 ### 사전 요구 사항
 
 *   [Docker Desktop](https://www.docker.com/products/docker-desktop) (Docker Engine 및 Docker Compose 포함)

@@ -25,6 +25,22 @@ This document tracks the development progress and outlines future tasks for the 
 
 ## 🚀 Next Steps & Future Enhancements
 
+### Workflow Diagram
+
+```
++-------------------+       +-------------------+       +-------------------+
+|     User Action   | ----> |   Frontend (React)| ----> |   Backend (FastAPI)|
+| (Browser/Client)  |       | (Nginx Static/SPA)|       | (API Endpoints)   |
++-------------------+       +-------------------+       +-------------------+
+         ^                                                       |
+         |                                                       |
+         |                                                       v
+         |                                               +-------------------+
+         |                                               |   Database (PG)   |
+         +-----------------------------------------------| (Data Storage)    |
+                                                         +-------------------+
+```
+
 ### Frontend Development
 - [x] Choose and implement a JavaScript framework (e.g., React, Vue) for a dynamic user interface.
 - [x] Create frontend components for user registration and login to interact with the backend API.
